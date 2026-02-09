@@ -1,0 +1,37 @@
+{
+  "name": "smart-prompt-lab-core",
+  "version": "1.0.0",
+  "description": "Instagram brand analysis and post generation API for Custom GPT integration",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "instagram",
+    "brand-analysis",
+    "social-media",
+    "ai",
+    "custom-gpt"
+  ],
+  "author": "Smart Prompt Lab",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "playwright": "^1.40.1",
+    "pdfkit": "^0.13.0",
+    "@types/pdfkit": "^0.12.12"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
