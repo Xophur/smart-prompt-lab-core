@@ -44,7 +44,7 @@ export class InstagramCollector {
 
       const posts = await page.evaluate(() => {
         const items = document.querySelectorAll("article a");
-        return Array.from(items).slice(0, 12).map((el, idx) => ({
+        return Array.from(items).slice(0, 12).map((el) => ({
           url: (el as HTMLAnchorElement).href,
           alt: (el.querySelector("img") as HTMLImageElement)?.alt || "",
         }));

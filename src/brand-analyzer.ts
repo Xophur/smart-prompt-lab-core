@@ -7,7 +7,7 @@ export interface BrandDna {
 }
 
 export class BrandAnalyzer {
-  analyzeBrand(handle: string, artifacts: Artifact[]): BrandDna {
+  analyzeBrand(_handle: string, artifacts: Artifact[]): BrandDna {
     const captions = artifacts.map(a => a.captionText || "").join(" ");
     const hasEmojis = /[\p{Emoji}]/gu.test(captions);
     const hasCaps = /[A-Z]{2,}/.test(captions);

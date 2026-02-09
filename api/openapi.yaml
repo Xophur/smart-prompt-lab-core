@@ -1,0 +1,305 @@
+openapi: 3.0.0
+info:
+  title: Smart Prompt Lab API
+  description: Instagram brand analysis and post generation API for Custom GPT integration
+  version: 1.0.0
+  contact:
+    name: Smart Prompt Lab
+    url: https://github.com/Xophur/smart-prompt-lab-core
+
+servers:
+  - url: https://your-deployment-url.com
+    description: Production server
+  - url: http://localhost:3000
+    description: Local development server
+
+paths:
+  /:
+    get:
+      summary: Health check
+      description: Returns API status and available endpoints
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  service:
+                    type: string
+                    example: Smart Prompt Lab API
+                  version:
+                    type: string
+                    example: 1.0.0
+                  status:
+                    type: string
+                    example: running
+                  endpoints:
+                    type: array
+                    items:
+                      type: string
+                    example: ["/analyze", "/pdf"]
+
+  /analyze:
+    post:
+      summary: Analyze Instagram account
+      description: Performs comprehensive Instagram brand analysis including competitor insights and post generation
+      operationId: analyzeInstagramAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - targetHandle
+              properties:
+                targetHandle:
+                  type: string
+                  description: Instagram handle to analyze (with or without @)
+                  example: "edm_brand"
+                recencyWindowDays:
+                  type: integer
+                  description: Number of days to look back for posts
+                  default: 30
+                  example: 30
+                maxRecentPosts:
+                  type: integer
+                  description: Maximum number of posts to collect
+                  default: 12
+                  example: 12
+                competitorCount:
+                  type: integer
+                  description: Number of competitors to analyze
+                  default: 5
+                  example: 5
+                generatePostCount:
+                  type: integer
+                  description: Number of post recommendations to generate
+                  default: 3
+                  example: 3
+      responses:
+        '200':
+          description: Successful analysis
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  targetHandle:
+                    type: string
+                    example: "edm_brand"
+                  brandDna:
+                    $ref: '#/components/schemas/BrandDna'
+                  competitorInsights:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CompetitorInsight'
+                  generatedPosts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/GeneratedPost'
+                  metadata:
+                    type: object
+                    properties:
+                      artifactsCollected:
+                        type: integer
+                      competitorsAnalyzed:
+                        type: integer
+                      postsGenerated:
+                        type: integer
+                      likeCommentVisible:
+                        type: boolean
+                      timestamp:
+                        type: string
+                        format: date-time
+        '400':
+          description: Bad request - missing or invalid parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "targetHandle is required"
+        '404':
+          description: Target handle not found or not accessible
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  reason:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+
+  /pdf:
+    post:
+      summary: Generate PDF report
+      description: Generates a PDF report from analysis data
+      operationId: generatePdfReport
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportData'
+      responses:
+        '200':
+          description: PDF report generated successfully
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Bad request - missing required report data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+
+components:
+  schemas:
+    BrandDna:
+      type: object
+      properties:
+        observed:
+          type: array
+          items:
+            type: string
+          description: Directly observed brand characteristics
+          example: ["12 recent posts analyzed", "Uses emojis: Yes", "Hashtag strategy: Active"]
+        inferred:
+          type: array
+          items:
+            type: string
+          description: Inferred brand insights
+          example: ["Tone: Energetic/Emphatic", "Audience engagement approach: Community-focused"]
+        artifactRefs:
+          type: array
+          items:
+            type: string
+          description: References to analyzed artifacts
+
+    CompetitorInsight:
+      type: object
+      properties:
+        handle:
+          type: string
+          example: "competitor_edm"
+        topFormats:
+          type: array
+          items:
+            type: string
+          example: ["carousel", "reel"]
+        commonThemes:
+          type: array
+          items:
+            type: string
+          example: ["music", "energy", "vibe"]
+        engagementAvg:
+          type: number
+          example: 5420
+
+    GeneratedPost:
+      type: object
+      properties:
+        caption:
+          type: string
+          description: Generated post caption
+          example: "🔥 READY FOR THIS? Music-inspired vibes coming at you!"
+        hashtags:
+          type: array
+          items:
+            type: string
+          example: ["#EDM", "#ElectronicMusic", "#Music"]
+        format:
+          type: string
+          example: "carousel"
+        reasoning:
+          type: string
+          description: Explanation of generation strategy
+          example: "Format 'carousel' chosen based on top competitor performance."
+
+    Artifact:
+      type: object
+      properties:
+        artifactId:
+          type: string
+        sourceUrl:
+          type: string
+        capturedAt:
+          type: string
+          format: date-time
+        accountHandle:
+          type: string
+        postId:
+          type: string
+        captionText:
+          type: string
+        mediaType:
+          type: string
+          enum: ["reel", "carousel", "image", "unknown"]
+        postedAt:
+          type: string
+          format: date-time
+        likeCount:
+          type: number
+        commentCount:
+          type: number
+
+    ReportData:
+      type: object
+      required:
+        - targetHandle
+        - brandDna
+        - competitorInsights
+      properties:
+        targetHandle:
+          type: string
+        brandDna:
+          $ref: '#/components/schemas/BrandDna'
+        competitorInsights:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompetitorInsight'
+        generatedPosts:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeneratedPost'
+        artifacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Artifact'
+        timestamp:
+          type: string
+          format: date-time
