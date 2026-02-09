@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 // Health check endpoint
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (_req: Request, res: Response) => {
   res.json({
     service: "Smart Prompt Lab API",
     version: "1.0.0",
@@ -33,7 +33,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // Main analysis endpoint
-app.post("/analyze", async (req: Request, res: Response) => {
+app.post("/analyze", async (req: Request, res: Response): Promise<Response | void> => {
   try {
     const {
       targetHandle,
@@ -136,7 +136,7 @@ app.post("/analyze", async (req: Request, res: Response) => {
 });
 
 // PDF generation endpoint
-app.post("/pdf", async (req: Request, res: Response) => {
+app.post("/pdf", async (req: Request, res: Response): Promise<Response | void> => {
   try {
     const reportData: ReportData = req.body;
 

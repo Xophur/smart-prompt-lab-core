@@ -14,7 +14,7 @@ export interface ReportData {
 }
 
 export class PDFRenderer {
-  generateReport(data: ReportData): PDFDocument {
+  generateReport(data: ReportData): PDFKit.PDFDocument {
     const doc = new PDFDocument({ margin: 50, size: "A4" });
 
     // Title page
@@ -75,28 +75,28 @@ export class PDFRenderer {
     return doc;
   }
 
-  private addTitle(doc: PDFDocument, text: string): void {
+  private addTitle(doc: PDFKit.PDFDocument, text: string): void {
     doc.fontSize(24)
        .fillColor("#2C3E50")
        .text(text, { align: "center" })
        .moveDown(0.5);
   }
 
-  private addSubtitle(doc: PDFDocument, text: string): void {
+  private addSubtitle(doc: PDFKit.PDFDocument, text: string): void {
     doc.fontSize(16)
        .fillColor("#34495E")
        .text(text, { align: "center" })
        .moveDown(0.3);
   }
 
-  private addSectionHeader(doc: PDFDocument, text: string): void {
+  private addSectionHeader(doc: PDFKit.PDFDocument, text: string): void {
     doc.fontSize(18)
        .fillColor("#2C3E50")
        .text(text)
        .moveDown(0.5);
   }
 
-  private addSubheader(doc: PDFDocument, text: string): void {
+  private addSubheader(doc: PDFKit.PDFDocument, text: string): void {
     doc.fontSize(14)
        .fillColor("#34495E")
        .text(text)
@@ -104,7 +104,7 @@ export class PDFRenderer {
   }
 
   private addText(
-    doc: PDFDocument,
+    doc: PDFKit.PDFDocument,
     text: string,
     options?: { align?: "left" | "center" | "right"; fontSize?: number; italic?: boolean }
   ): void {
@@ -120,7 +120,7 @@ export class PDFRenderer {
        .moveDown(0.3);
   }
 
-  private addBullet(doc: PDFDocument, text: string): void {
+  private addBullet(doc: PDFKit.PDFDocument, text: string): void {
     doc.fontSize(11)
        .fillColor("#000000")
        .text(`• ${text}`, { indent: 20 })
